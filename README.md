@@ -12,15 +12,19 @@ Switch between module pins D3 and D2
 
 Lamp can change all color, patterns and effects from web page or by url request.  
 Examples:  
+```
 {{ip}}/update?state=on  
 {{ip}}/update?mode=Solid&colorCounter=Red  
+```
 
 Added support for MQTT, all settings can be changed. 
 Example:  
+```
 FiberLamp/set/colorCounter Red  
 FiberLamp/set/state ON  
-
+```
 Easy Home Assistant configuration   
+```
 - platform: mqtt  
   name: "Fiber Optic Lamp"  
   state_topic: "FiberLamp/state"  
@@ -29,7 +33,7 @@ Easy Home Assistant configuration
   icon: hass:lightbulb  
   qos: 1  
   retain: true  
-
+```
 Added auto change effects, brightness and speed.  
 ![stand](https://github.com/Robinek70/Smart-Fiber-Optic-LED-Lamp/raw/esp8266/images/empty-stand.jpg)
 ![stand](https://github.com/Robinek70/Smart-Fiber-Optic-LED-Lamp/raw/esp8266/images/d1-module.jpg)
