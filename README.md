@@ -12,7 +12,7 @@ Switch between module pins D3 and D2
 
 Lamp can change all color, patterns and effects from web page or by url request.  
 Examples:  
-{{ip}}/update?status=on  
+{{ip}}/update?state=on  
 {{ip}}/update?mode=Solid&colorCounter=Red  
 
 Added support for MQTT, all settings can be changed. 
