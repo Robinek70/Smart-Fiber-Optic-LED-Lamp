@@ -20,6 +20,9 @@ Copyright (c) Nicolas Gallagher and Jonathan Neal
 .hide {
   display:none;
 }
+.small {
+  font-size: 70%;
+}
 )"";
 
 /**************************************************************************/
@@ -48,7 +51,7 @@ const char script_js[] PROGMEM = R""(
      * Setup request, including a callback that runs any
      * subsequent requests on completion
      */
-    document.getElementById("statusHidden").disabled = document.getElementById("status").checked;
+    document.getElementById("stateHidden").disabled = document.getElementById("state").checked;
     
     var form = new FormData (document.getElementById ("form"));
     var request = new XMLHttpRequest ();
@@ -68,7 +71,7 @@ const char script_js[] PROGMEM = R""(
   // Handle full update and save settings
   function change ()  
   {
-    document.getElementById("statusHidden").disabled = document.getElementById("status").checked;
+    document.getElementById("stateHidden").disabled = document.getElementById("state").checked;
     
     var form = document.getElementById ("form");
     var request = new XMLHttpRequest ();
@@ -111,7 +114,7 @@ function switchBtnUpdate(value) {
   function switchOn(value) {
     switchBtnUpdate(value);
 
-    document.getElementById("status").checked = value;
+    document.getElementById("state").checked = value;
     change();
   }
   function toggleNetwork() {
@@ -120,7 +123,7 @@ function switchBtnUpdate(value) {
     if(hidden) removeClass(net, "hide"); else addClass(net, "hide");
   }
   function init() {
-    switchBtnUpdate(document.getElementById("status").checked);
+    switchBtnUpdate(document.getElementById("state").checked);
   }
 )"";
 
@@ -139,18 +142,18 @@ const char page_template[] PROGMEM = R""(<!DOCTYPE html>
 
     <link rel="icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYxIDY0LjE0MDk0OSwgMjAxMC8xMi8wNy0xMDo1NzowMSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNS4xIFdpbmRvd3MiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6MjIxOTlEMTI3ODZEMTFFQjhEOTRGMzI3RjYxQkRFNEUiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6MjIxOTlEMTM3ODZEMTFFQjhEOTRGMzI3RjYxQkRFNEUiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDoyMjE5OUQxMDc4NkQxMUVCOEQ5NEYzMjdGNjFCREU0RSIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDoyMjE5OUQxMTc4NkQxMUVCOEQ5NEYzMjdGNjFCREU0RSIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PhfLtPIAAACWUExURYM7AADd8QDWCujxANYPAPZP/JJSHjIA1qBpPObYzM2xmbaMaeLRw/ydT5leLY9NGK+AWt/MvYxJEqd1S/jz8LqTcvv49olEDJVXJL+ae7KFYMinjbmQb+/m3salippgMPz6+cOghKl3Tvbx7YQ9A8mqkN3Kus+znLOHY/Pt559nOeXVyaJrP9W8qKx8VJBQG/Lq5P///7Nyi38AAAAydFJOU/////////////////////////////////////////////////////////////////8ADVCY7wAAAT9JREFUeNqU0tlWwjAQBuAsEyIqbUF2VNz3bd7/5ZwtWOmhR/+LpnS+ZtIQh18fE3cg9dMU3W3telJduXPXm42reFg0mxCOJSklGVdvAs7cgK4vF4ghoCQlGYCyoNIRgwn+1E1QGfG9gGsB4Tfg24GBB2wLWoTXOjYGIkeIlySgC4OTNojovQKEBKjUKzhlHSP9lj4AvIwOwNKG+9u3lhYKvGcBwJPsgZyzABL0urTZn0GI9xBBv9imaLfIGYBARBVdwIK+MCoJ2AEA0oRFDPszgISWIfsXA5GUZPNaQJoIoCXGEgNj2wefy5+WtMXawOUOZDsYtlGVgaXWuYkCq4/LgXE3BWAbvNYC5NB+rrwfakIYDhONj82dHtpZ/7G/d8+Dvvp27nC6PkiWszm6ctrt2WhkN7vn/wW7/Bl8CzAA7Z1Fc6eGkbsAAAAASUVORK5CYII=">
 
-    <link href="https://fonts.googleapis.com/css2?family=Reggae One&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
 
     <script src="/script.js"></script>
     
   </head>
-  <body onload="init()" style="padding:0.8em; font-family: 'Reggae One', sans-serif;">
+  <body onload="init()" style="padding:0.8em; font-family: 'Montserrat', sans-serif;">
   
     <h1><center>Smart Optic Fiber Lamp</center></h1>
     
     <form id="form" class="pure-form pure-form-aligned">
       <fieldset>
-          <legend>Network <a href="#" onClick="toggleNetwork()" class="pure-button">show/hide</a></legend>
+          <legend>Network <a href="#" onClick="toggleNetwork()" class="pure-button small">show/hide</a></legend>
           <div  id="showNetwork" class="{{hide_net}}">
           <div class="pure-control-group">
             <label for="ssid">SSID</label>
@@ -163,6 +166,14 @@ const char page_template[] PROGMEM = R""(<!DOCTYPE html>
           </div>
 
           <div class="pure-control-group">
+            <label for="mqttHost">MQTT host</label>
+            <input type="text" name="mqttHost" value="{{mqttHost}}" onChange="change()">
+          </div>
+          <div class="pure-control-group">
+            <label for="mqttTopic">Topic prefix</label>
+            <input type="text" name="mqttTopic" value="{{mqttTopic}}" onChange="change()">
+          </div>
+          <div class="pure-control-group">
             <label>&nbsp;</label>
             <a class="pure-button" style="background: rgb(255, 120, 30);" href="/reboot"><b>Reboot</b></a>
           </div>
@@ -172,9 +183,9 @@ const char page_template[] PROGMEM = R""(<!DOCTYPE html>
       <fieldset>
           <legend>Master controls</legend>
           <div class="pure-control-group">
-            <label for="status">Status</label>
-            <input id="status" type="checkbox" name="status" {{statusCheck}} value="on" style="display:none">
-            <input id="statusHidden" type="hidden" value="off" name="status">
+            <label for="state">Status</label>
+            <input id="state" type="checkbox" name="state" {{stateCheck}} value="on" style="display:none">
+            <input id="stateHidden" type="hidden" value="off" name="state">
             <a class="pure-button" id="btnOn" href="#" onClick="switchOn(true)">ON</a>
             <a class="pure-button" id="btnOff" href="#"  onClick="switchOn(false)">OFF</a>
           </div>

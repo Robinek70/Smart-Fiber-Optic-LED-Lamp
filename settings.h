@@ -15,7 +15,7 @@ R""(maxBrightness=32
 password=
 ssid=
 mqttHost=
-status=on
+state=on
 mode=Effect
 speed=200
 solidColor=#881111
@@ -24,6 +24,8 @@ paletteCounter=0
 effectNumber=0
 autochange=
 changeInterval=30
+mqttHost=
+mqttTopic=FiberLamp/
 )"";
 
 const char *modes_names[] PROGMEM =
@@ -91,12 +93,12 @@ int findInList(const List &list, const String &current, int notFoundValue = -1) 
 void save_settings();
 
 void update() {
-  String sStatus = settings.at (F("status"));
-  bool newStatus = (sStatus =="on") || (sStatus =="1");
-  if(!newStatus && isOn) {
+  String sState = settings.at (F("state"));
+  bool newState = (sState =="ON") ||(sState =="on") || (sState =="1");
+  /*if(newState != isOn) {
     save_settings();
-  }
-  isOn = newStatus;
+  }*/
+  requestedState = newState;
 
   updatesPerSec = settings.at (F("speed")).toInt();
   isAutoChange = settings.at (F("autochange"))=="checked";
@@ -107,9 +109,14 @@ void update() {
   maxBrightness = settings.at (F("maxBrightness")).toInt();
   FastLED.setBrightness(maxBrightness);
 
-  colorCounter = findInList(color_names, settings.at (F("colorCounter"))), 0;
+  colorCounter = findInList(color_names, settings.at (F("colorCounter")), 0);
+  if(colorCounter==0) colorCounter = settings.at (F("colorCounter")).toInt();
+  
   paletteCounter = findInList(palette_names, settings.at (F("paletteCounter")), 0);
+  if(paletteCounter==0) paletteCounter = settings.at (F("paletteCounter")).toInt();
+ 
   gCurrentPatternNumber = findInList(effect_names, settings.at (F("effectNumber")), 0);
+  if(gCurrentPatternNumber==0) gCurrentPatternNumber = settings.at (F("effectNumber")).toInt();
 
   Serial.println("Settings applied.");
 }

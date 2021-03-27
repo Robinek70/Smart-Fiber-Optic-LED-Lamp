@@ -22,8 +22,10 @@ DNSServer dnsServer;
 ESP8266WebServer server (80);
 IPAddress APIP (192, 168, 4, 1);
 WiFiClient client;
+PubSubClient mqttClient(client);
 
 byte isOn = 1;
+byte requestedState = 1;
 int setMode = 2;
 uint8_t maxBrightness = 160;
 uint16 updatesPerSec = 200;
@@ -38,6 +40,7 @@ bool nextChange = false;
 #include "wifi_logo.h"
 #include "wifi.h"
 #include "web.h"
+#include "mqtt.h"
 
 const int wakeUpPin = 0; // D3
 const int gndPin = 4;    // D2
@@ -64,6 +67,7 @@ void setup() {
 	delay(800);
 	
 	setup_wifi();
+	setupMqtt();
 	nextChangeTick = 0;
 }
 
@@ -104,12 +108,7 @@ void loop() {
 	else if (FunctionButton.isLongClick()) {
     	Serial.print("isLongClick: ");
 
-
-		isOn = !isOn;
-		if(!isOn) {
-			save_settings();
-		}
-		Serial.println(isOn?"Turn OFF":"Turn ON");
+		requestedState = !requestedState;
 	}
 
     nextChange = false;
@@ -118,7 +117,22 @@ void loop() {
 		nextChange=true;
 	}
 
+	if (!mqttClient.connected()) {
+		reconnect();
+	} else {
+		mqttClient.loop();
+	}
+
 	server.handleClient ();
+
+    if(requestedState != isOn) {
+		isOn = requestedState;
+		mqttClient.publish(mqttTopicState, ((isOn) ? STATE_ON : STATE_OFF) , true);
+		if(!isOn) {
+			save_settings();
+		}
+		Serial.println(isOn?"Turn ON":"Turn OFF");
+	}
 
 	if(!isOn) {
 		fadeToBlackBy( leds, NUM_LEDS, 20);
