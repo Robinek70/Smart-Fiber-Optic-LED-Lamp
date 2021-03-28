@@ -176,6 +176,7 @@ const char page_template[] PROGMEM = R""(<!DOCTYPE html>
           <div class="pure-control-group">
             <label>&nbsp;</label>
             <a class="pure-button" style="background: rgb(255, 120, 30);" href="/reboot"><b>Reboot</b></a>
+            <a style="position: relative;float: right;" href="/update" update="">Update firmware</a>
           </div>
           </div>
       </fieldset>

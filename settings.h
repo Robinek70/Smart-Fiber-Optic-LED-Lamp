@@ -95,9 +95,7 @@ void save_settings();
 void update() {
   String sState = settings.at (F("state"));
   bool newState = (sState =="ON") ||(sState =="on") || (sState =="1");
-  /*if(newState != isOn) {
-    save_settings();
-  }*/
+
   requestedState = newState;
 
   updatesPerSec = settings.at (F("speed")).toInt();

@@ -2,6 +2,7 @@
 #include <WiFiClient.h>
 #include <ESP8266mDNS.h>
 #include <ESP8266WebServer.h>
+#include <ESP8266HTTPUpdateServer.h>
 #include <DNSServer.h>
 #include <PubSubClient.h>
 #include <WebSocketsServer.h>
@@ -9,7 +10,6 @@
 #include "HtmlColor.h"
 #include <FastLED.h>
 #include <PinButton.h>
-//#include <EEPROM.h>
 
 // define the LEDs
 #define LED_PIN  2 		// D4 //pin the LEDs are connected to
@@ -23,6 +23,7 @@ ESP8266WebServer server (80);
 IPAddress APIP (192, 168, 4, 1);
 WiFiClient client;
 PubSubClient mqttClient(client);
+ESP8266HTTPUpdateServer  httpUpdater;
 
 byte isOn = 1;
 byte requestedState = 1;
@@ -59,6 +60,7 @@ void setup() {
 	Serial.println("\nFastled started");
 
 	load_settings();
+	update();
 
 	leds[0].setRGB(255, 0, 0);
 	leds[8].setRGB(0, 255, 0);
@@ -66,8 +68,10 @@ void setup() {
 	FastLED.show();
 	delay(800);
 	
+	httpUpdater.setup(&server);
 	setup_wifi();
 	setupMqtt();
+
 	nextChangeTick = 0;
 }
 
