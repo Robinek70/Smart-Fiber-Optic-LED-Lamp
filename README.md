@@ -13,7 +13,7 @@ Switch between module pins D3 and D2
 Lamp can change all color, patterns and effects from web page or by url request.  
 Examples:  
 ```
-{{ip}}/update?state=on  
+{{ip}}/update?state=ON  
 {{ip}}/update?mode=Solid&colorCounter=Red  
 ```
 
