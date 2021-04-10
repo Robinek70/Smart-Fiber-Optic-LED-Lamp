@@ -27,6 +27,7 @@ void replaceVariables(String& result) {
   for (const auto &setting : settings)
   { 
     result.replace ("{{" + setting.first + "}}", setting.second);
+    result.replace ("{{checked-" + setting.first + "}}", (setting.second == STATE_ON)?"checked":"");
   }
 
   // replace placeholders
@@ -35,7 +36,6 @@ void replaceVariables(String& result) {
   result.replace (F("{{palette_choices}}"), make_options (palette_names, settings.at (F("paletteCounter"))));
   result.replace (F("{{effect_choices}}"), make_options (effect_names, settings.at (F("effectNumber"))));
   result.replace (F("{{hide_net}}"), settings.at (F("ssid"))==""?"":"hide");
-  result.replace (F("{{stateCheck}}"), isOn?"checked":"");
 }
 
 void handle_root ()

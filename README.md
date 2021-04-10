@@ -23,7 +23,7 @@ Example:
 FiberLamp/set/colorCounter Red  
 FiberLamp/set/state ON  
 ```
-Easy Home Assistant configuration   
+Easy Home Assistant configuration or Auto Discovery   
 ```
 - platform: mqtt  
   name: "Fiber Optic Lamp"  
@@ -37,6 +37,7 @@ Easy Home Assistant configuration
 Added auto change effects, brightness and speed.  
 Added OTA support.  
 Added MQTT support.  
+Added Home Assistant MQTT Auto Discovery  
 ![stand](https://github.com/Robinek70/Smart-Fiber-Optic-LED-Lamp/raw/esp8266/images/empty-stand.jpg)
 ![stand](https://github.com/Robinek70/Smart-Fiber-Optic-LED-Lamp/raw/esp8266/images/d1-module.jpg)
 ![lamp](https://github.com/Robinek70/Smart-Fiber-Optic-LED-Lamp/raw/esp8266/images/lamp.jpg)

@@ -5,6 +5,9 @@
 #include <map>
 #include <list>
 
+#define STATE_ON    "ON"
+#define STATE_OFF   "OFF"
+
 using Settings = std::map<String, String>;
 
 Settings settings;
@@ -26,6 +29,7 @@ autochange=
 changeInterval=30
 mqttHost=
 mqttTopic=FiberLamp/
+haDiscovery=OFF
 )"";
 
 const char *modes_names[] PROGMEM =
@@ -42,8 +46,8 @@ const char *color_names[] PROGMEM =
   "Yellow",
   "Yellow fade 2",
   "Yellow 2",
-  "Green fade 3",
-  "Green 3",
+  "Green fade",
+  "Green",
   "Blue fade",
   "Blue",
   "Dark blue fade",
@@ -91,15 +95,16 @@ int findInList(const List &list, const String &current, int notFoundValue = -1) 
 }
 
 void save_settings();
+void publishState(const __FlashStringHelper* property);
 
 void update() {
   String sState = settings.at (F("state"));
-  bool newState = (sState =="ON") ||(sState =="on") || (sState =="1");
+  bool newState = (sState == STATE_ON) || (sState =="1");
 
   requestedState = newState;
 
   updatesPerSec = settings.at (F("speed")).toInt();
-  isAutoChange = settings.at (F("autochange"))=="checked";
+  isAutoChange = settings.at (F("autochange")) == STATE_ON;
 
   String mode = settings.at (F("mode"));
   setMode = findInList(modes_names, mode, 0);
@@ -117,6 +122,9 @@ void update() {
   if(gCurrentPatternNumber==0) gCurrentPatternNumber = settings.at (F("effectNumber")).toInt();
 
   Serial.println("Settings applied.");
+
+  publishState(F("maxBrightness"));
+  publishState(F("autochange"));
 }
 
 void parse_settings (const char *data, char splitter = '\n')

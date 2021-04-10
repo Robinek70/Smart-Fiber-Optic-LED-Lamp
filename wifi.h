@@ -59,7 +59,7 @@ void setup_wifi() {
 
   // Start the webserver
   server.on (F("/"), handle_root);
-  server.on (F("/update"), handle_update);
+  server.on (F("/store"), handle_update);
   server.on (F("/change"), handle_change);
   server.on (F("/reboot"), handle_reboot);
   server.on (F("/pure-min.css"), [] { server.send (200, "text/css", pure_min_css); });

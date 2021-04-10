@@ -45,17 +45,19 @@ https://github.com/pure-css/pure/blob/master/LICENSE.md
 const char script_js[] PROGMEM = R""(
   var blocked = false;
 
-  function update ()  
+  function store ()
   {
     /*
      * Setup request, including a callback that runs any
      * subsequent requests on completion
      */
     document.getElementById("stateHidden").disabled = document.getElementById("state").checked;
+    document.getElementById("haDiscoveryHidden").disabled = document.getElementById("haDiscovery").checked;
+    document.getElementById("autochangeHidden").disabled = document.getElementById("autochange").checked;
     
     var form = new FormData (document.getElementById ("form"));
     var request = new XMLHttpRequest ();
-    request.open ("POST", "/update", true);
+    request.open ("POST", "/store", true);
     request.addEventListener ("load", event => blocked = false);
 
     /*
@@ -72,6 +74,8 @@ const char script_js[] PROGMEM = R""(
   function change ()  
   {
     document.getElementById("stateHidden").disabled = document.getElementById("state").checked;
+    document.getElementById("haDiscoveryHidden").disabled = document.getElementById("haDiscovery").checked;
+    document.getElementById("autochangeHidden").disabled = document.getElementById("autochange").checked;
     
     var form = document.getElementById ("form");
     var request = new XMLHttpRequest ();
@@ -174,6 +178,11 @@ const char page_template[] PROGMEM = R""(<!DOCTYPE html>
             <input type="text" name="mqttTopic" value="{{mqttTopic}}" onChange="change()">
           </div>
           <div class="pure-control-group">
+            <label for="haDiscovery">Home Assistant Auto Discovery</label>
+            <input id="haDiscovery" type="checkbox" name="haDiscovery" {{checked-haDiscovery}} value="ON" onChange="change()">
+            <input id="haDiscoveryHidden" type="hidden" value="OFF" name="haDiscovery">
+          </div>
+          <div class="pure-control-group">
             <label>&nbsp;</label>
             <a class="pure-button" style="background: rgb(255, 120, 30);" href="/reboot"><b>Reboot</b></a>
             <a style="position: relative;float: right;" href="/update" update="">Update firmware</a>
@@ -185,50 +194,50 @@ const char page_template[] PROGMEM = R""(<!DOCTYPE html>
           <legend>Master controls</legend>
           <div class="pure-control-group">
             <label for="state">Status</label>
-            <input id="state" type="checkbox" name="state" {{stateCheck}} value="on" style="display:none">
-            <input id="stateHidden" type="hidden" value="off" name="state">
+            <input id="state" type="checkbox" name="state" {{checked-state}} value="ON" style="display:none">
+            <input id="stateHidden" type="hidden" value="OFF" name="state">
             <a class="pure-button" id="btnOn" href="#" onClick="switchOn(true)">ON</a>
             <a class="pure-button" id="btnOff" href="#"  onClick="switchOn(false)">OFF</a>
           </div>
           <div class="pure-control-group">
             <label for="maxBrightness">Brightness</label>
-            <input type="range" name="maxBrightness" value="{{maxBrightness}}" onInput="update()" onChange="update()" min="1" max="255" class="slider" style="width: 20em;">
+            <input type="range" name="maxBrightness" value="{{maxBrightness}}" onInput="store()" onChange="store()" min="1" max="255" class="slider" style="width: 20em;">
           </div>
           <div class="pure-control-group">
             <label for="speed">Speed</label>
-            <input type="range" name="speed" value="{{speed}}" onInput="update()" onChange="update()" min="1" max="1000" class="slider" style="width: 20em;">
+            <input type="range" name="speed" value="{{speed}}" onInput="store()" onChange="store()" min="1" max="1000" class="slider" style="width: 20em;">
           </div>
           
           <div class="pure-control-group">
             <label for="mode">Mode</label>
-            <select id="mode" name="mode" onChange="return update();">{{modes_choices}}</select>
+            <select id="mode" name="mode" onChange="return store();">{{modes_choices}}</select>
           </div>
 
           <div class="pure-control-group">
             <label for="colorCounter">Defined colors</label>
-            <select id="colorCounter" name="colorCounter" onChange="return update();">{{color_choices}}</select>
+            <select id="colorCounter" name="colorCounter" onChange="return store();">{{color_choices}}</select>
           </div>
           <!--<div class="pure-control-group">
             <label for="solidColor">Color</label>
-            <input type="color" class="pure-button" style="height:2em; padding:0.2em;" name="solidColor" value="{{solidColor}}" onInput="update()" onChange="update()">
+            <input type="color" class="pure-button" style="height:2em; padding:0.2em;" name="solidColor" value="{{solidColor}}" onInput="store()" onChange="store()">
           </div>-->
           <div class="pure-control-group">
             <label for="paletteCounter">Palettes</label>
-            <select id="paletteCounter" name="paletteCounter" onChange="return update();">{{palette_choices}}</select>
+            <select id="paletteCounter" name="paletteCounter" onChange="return store();">{{palette_choices}}</select>
           </div>
 
           <div class="pure-control-group">
             <label for="effectNumber">Effects</label>
-            <select id="effectNumber" name="effectNumber" onChange="return update();">{{effect_choices}}</select>
+            <select id="effectNumber" name="effectNumber" onChange="return store();">{{effect_choices}}</select>
           </div>
           <div class="pure-control-group">
             <label for="autochange">Auto change</label>
-            <input id="autochange" type="checkbox" name="autochange" {{autochange}} value="checked" onChange="update();">
-            <input id="autochangeHidden" type="hidden" value="unchecked" name="autochange"/>
+            <input id="autochange" type="checkbox" name="autochange" {{checked-autochange}} value="ON" onChange="store();">
+            <input id="autochangeHidden" type="hidden" value="OFF" name="autochange"/>
           </div>
           <div class="pure-control-group">
             <label for="changeInterval">Change interval [s]</label>
-            <input type="number" name="changeInterval" value="{{changeInterval}}" onChange="update()">
+            <input type="number" name="changeInterval" value="{{changeInterval}}" onChange="store()">
           </div>
           
       </fieldset>      
