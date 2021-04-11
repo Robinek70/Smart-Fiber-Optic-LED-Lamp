@@ -141,7 +141,7 @@ void publishToHa() {
       Serial.println (mqttTopicHa);
       Serial.println (payload);
       Serial.println (strlen(payload));
-      mqttClient.publish(mqttTopicHa, payload, false);
+      mqttClient.publish(mqttTopicHa, payload, true);
 
       sprintf_P(payload, haConfigAc, 
         mqttClientName.c_str(), mqttClientName.c_str(), mqttTopicSet, mqttTopicState, mqttTopicStatus
@@ -152,7 +152,7 @@ void publishToHa() {
       Serial.println (mqttTopicHa);
       Serial.println (payload);
       Serial.println (strlen(payload));
-      mqttClient.publish(mqttTopicHa, payload, false);
+      mqttClient.publish(mqttTopicHa, payload, true);
 
       mqttClient.setBufferSize(256); 
     }
